@@ -30,14 +30,19 @@ class chessBot:
 
         return best_final
 
-    def _minimax(self,depth, board, alpha, beta, is_maximizing):
-        if depth <= 0 or board.is_game_over():
+    def _minimax(self, depth, board, alpha, beta, is_maximizing):
+        if board.is_game_over():
             return evaluate(board)
+        
+        if depth <= 0 :
+            return self.quiescence_search(board,alpha,beta,2)
 
         if is_maximizing:
             best_move = float('-inf')
             for move in board.legal_moves:
                 board.push(move)
+                
+                
                 value = self._minimax(depth - 1, board, alpha, beta, False)
                 board.pop()
                 best_move = max(best_move, value)
@@ -46,6 +51,8 @@ class chessBot:
                     break
             return best_move
         else:
+           
+
             best_move = float('inf')
             for move in board.legal_moves:
                 board.push(move)
@@ -56,6 +63,7 @@ class chessBot:
                 if beta <= alpha:
                     break
             return best_move
+
 
 
     def quiescence_search(self,board, alpha, beta, depth):
@@ -82,10 +90,10 @@ class chessBot:
         return alpha
     def stockfish_move(self,board):
 
-        stockfish_path = r"C:\Users\ASUS\Documents\Personal Projects\Simple-Chess-Engine\stockfish\stockfish-windows-x86-64-modern.exe"
+        stockfish_path = r"/workspaces/Chess_Ai/stockfish-ubuntu-x86-64-modern"
 
         engine = chess.engine.SimpleEngine.popen_uci(stockfish_path)
-        engine.configure({"Threads": 1,"Skill Level":2})
+        engine.configure({"Skill Level":1})
         stockfish_move = engine.play(board, chess.engine.Limit(time=0.5))
 
 
